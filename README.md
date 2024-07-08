@@ -75,3 +75,15 @@ lazywal-cli animation.gif
 * i3
 #### Doesn't work (for now):
 TODO: test more
+
+## In development (Go binary)
+
+Currently, this command, with the given `path` and `display` works. Still to be terminated in edge cases
+
+``` sh
+go run cmd/lazywal/main.go vl <path> setdisplay <display>
+
+# E.g.,
+# go run cmd/lazywal/main.go vl ~/Pictures/Wallpapers/Animated/abstract-liquid-dream-moewalls-com.mp4 setdisplay "2560x1080"
+```
+

@@ -5,6 +5,12 @@ install:
 	@cp -p lazywal-cli $(DESTDIR)$(PREFIX)/bin/lazywal-cli
 	@chmod 755 $(DESTDIR)$(PREFIX)/bin/lazywal-cli
 
+install-go:
+	@mkdir -p $(DESTDIR)$(PREFIX)/bin
+	@go build
+	@cp -p lazywal-cli $(DESTDIR)$(PREFIX)/bin/lazywal-cli
+	@chmod 755 $(DESTDIR)$(PREFIX)/bin/lazywal-cli
+
 uninstall:
 	@rm -rf $(DESTDIR)$(PREFIX)/bin/lazywal-cli
 
