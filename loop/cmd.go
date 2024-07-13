@@ -18,8 +18,8 @@ func init() {
 var Cmd = &Z.Cmd{
 	Name:      `lazywal`,
 	Summary:   `Lazywal: a terminal client to help setup video-loops/gifs as background.`,
-	Version:   `v1.0.2`,
-	Copyright: `Copyright 2021-2024 Zayac-The-Engineer, 2024 Pedro G. Branquinho`,
+	Version:   `v1.0.3`,
+	Copyright: `Copyright 2021-2024 Zayac-The-Engineer, 2024 Pedro G. Branquinho (Go version)`,
 	License:   `MIT License`,
 	Site:      `buddhilw.com`,
 	Source:    `git@github.com/BuddhiLW/lazywal-cli.git`,
@@ -30,7 +30,7 @@ var Cmd = &Z.Cmd{
 		help.Cmd, conf.Cmd, vars.Cmd,
 
 		// local commands (in this module)
-		LoopCmd,
+		LoopCmd, ClearCmd,
 	},
 
 	// TODO: increment Description
