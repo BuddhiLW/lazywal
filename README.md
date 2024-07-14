@@ -7,59 +7,56 @@ Dependencies:
 * [mpv](https://github.com/mpv-player/mpv)
 * [xwinwrap](https://github.com/ujjwal96/xwinwrap) ([aur](https://aur.archlinux.org/packages/xwinwrap-git/))
 
+Optional -- native integration:
+* [wal](https://github.com/dylanaraps/pywal/wiki/Installation)
+
 Universal install
 ```bash
-make install
+make install-go
 ```
 Arch Linux [AUR](https://aur.archlinux.org/packages/lazywal-cli/)
 ```bash
 yay -S lazywal-cli
 ```
+
 ## Usage
 
 For help
 ```bash
-lazywal-cli -h
-```
-Setting a video as a wallpaper
-```bash
-lazywal-cli [filename]
-```
-Restoring last wallpaper
-```bash
-lazywal-cli -r
-```
-Setting wallpaper for a specific monitor. This one is a bit more complicated, so I have a couple examples.
-
-* Ex1: External monitor in the right of main monitor
-
-from `xrandr`,
-```bash
-HDMI-1-0 connected 2560x1080+1920+0 (normal left inverted right x axis y axis) 673mm x 284mm
+lazywal help
 ```
 
-So we use,
-```bash
-lazywal-cli -D 2560x1080+1920 animation.gif
+``` text
+COMMANDS
+       help              - display help similar to man page format
+       set-path|path|set - Renders the file in <path> as wallpaper with specified display dimension.
+       kill|clear        - Kill all process related with 'xwinwrap' that may be hanging.
+
+DESCRIPTION
+       Lazywal: a terminal client to help setup video-loops/gifs as background.
+
+       You can use the following commands: 
+       - lazywal set <path>               (Tries to get first-display screen-size automatically) 
+       - lazywal set <path> display <WxH> (Width x Height - e.g. 1440x1080, 2560x1080 etc.) 
+       - lazywal kill                     (Kills all _xwinwrap_ processes running.)
+
+       Note: path should be the path to the video-loop file.
+
+       See the README.md for more information and examples, or use *_command-tree_
+       help* to see another man-page about the specific command-tree.
 ```
 
-* Ex2: Render in the primary display
+### Pywal
 
-From `xrandr`,
-```bash
-eDP-1 connected primary 1920x1080+0+0
+If you add `pywal` at the end of your command, then the `lazywal` binary will use `wal` command to update you X-server color-scheme.
+
+``` bash
+lazywal set /path/to/file display 1920x1080 pywal
 ```
 
-So we use,
-```sh
-lazywal-cli -D 1920x1080 animation.gif
-```
+## Showcase
 
-* DEFAULT: To render in both screens the same gif image (not mirrored)
-
-```sh
-lazywal-cli animation.gif
-```
+![show-case](./output.gif)
 
 ## Tested DEs, WMs
 
@@ -70,20 +67,11 @@ lazywal-cli animation.gif
 * ratpoison
 * DWM
 * xmonad
+
 #### Works, but has weird quirks:
 * BSPWM
 * i3
+
 #### Doesn't work (for now):
 TODO: test more
-
-## In development (Go binary)
-
-Currently, this command, with the given `path` and `display` works. Still to be terminated in edge cases
-
-``` sh
-go run cmd/lazywal/main.go vl <path> setdisplay <display>
-
-# E.g.,
-# go run cmd/lazywal/main.go vl ~/Pictures/Wallpapers/Animated/abstract-liquid-dream-moewalls-com.mp4 setdisplay "2560x1080"
-```
 
