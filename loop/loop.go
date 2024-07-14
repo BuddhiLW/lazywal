@@ -96,6 +96,16 @@ var LoopCmd = &Z.Cmd{
 				return err
 			}
 		}
+
+		// if last `args` is any of PywalCmd.Aliases or PywalCmd.Name
+		// Then, update pywal schema
+		if len(args) > 0 && Matches(PywalCmd, args[len(args)-1]) {
+			err := PywalCmd.Call(caller)
+			if err != nil {
+				return err
+			}
+		}
+
 		return nil
 	},
 }
@@ -117,19 +127,15 @@ var SetDisplayCmd = &Z.Cmd{
 	},
 }
 
-func SetDisplay(display string) error {
-	log.Printf("Setting wallpaper to dimension-position of: %v", display)
-	dimension := display
-
-	if validDimension(dimension) {
-		size, err := parseSize(dimension)
-		if err != nil {
-			return err
-		}
-		Wall.Config.Dimensions = size
+var PywalCmd = &Z.Cmd{
+	Name:     `pywal`,
+	Aliases:  []string{"update-pywal", "colors"},
+	Usage:    `lazywal set <path> colors`,
+	Summary:  `Update pywal scheme to use a random frame from the loop.`,
+	NumArgs:  0,
+	Commands: []*Z.Cmd{help.Cmd},
+	Call: func(_ *Z.Cmd, args ...string) error {
+		Wall.Pywal()
 		return nil
-	} else {
-		log.Fatal("Dimension parameter is incorrect")
-	}
-	return nil
+	},
 }

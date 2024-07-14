@@ -3,6 +3,7 @@ module github.com/BuddhiLW/lazywal-cli
 go 1.22.2
 
 require (
+	github.com/google/uuid v1.6.0
 	github.com/rwxrob/bonzai v0.20.10
 	github.com/rwxrob/conf v0.8.2
 	github.com/rwxrob/help v0.7.2

@@ -17,8 +17,8 @@ func init() {
 
 var Cmd = &Z.Cmd{
 	Name:      `lazywal`,
-	Summary:   `Lazywal: a terminal client to help setup video-loops/gifs as background.`,
-	Version:   `v1.0.3`,
+	Summary:   `Lazywal: a terminal client to facilitate setting up video-loops/gifs as background.`,
+	Version:   `v0.5.0`,
 	Copyright: `Copyright 2021-2024 Zayac-The-Engineer, 2024 Pedro G. Branquinho (Go version)`,
 	License:   `MIT License`,
 	Site:      `buddhilw.com`,
@@ -36,23 +36,14 @@ var Cmd = &Z.Cmd{
 	// TODO: increment Description
 	Description: `
 		Lazywal: a terminal client to help setup video-loops/gifs as background.
+
+		You can use the following commands:
+		* lazywal set **path**  			   (Tries to get first-display screen-size automatically)
+		* lazywal set **path** display **WxH** (Width x Height - e.g. 1440x1080, 2560x1080 etc.)
+		* lazywal kill 						   (Kills all _xwinwrap_ processes running.)
+
+		Note: **path** should be the path to the video-loop file.
+
+		See the README.md for more information and examples, or use *_command-tree_ help* to see another man-page about the specific command-tree.
 		`,
-
-	// -------------------------
-	// Description template:
-	// -------------------------
-	// Quake Report is a Bonzai composite command tree, for generating Reports for Cloud Walk technical test.
-
-	// It is a simple CLI application that generates a report for the given earthquake data.
-
-	// You can use the following commands to generate the report:
-
-	// * qrep **command** help	(documentation for the **command**)
-	// * qrep data
-	// * qrep data **n**		(where **n** is the match you want json-formatted data about)
-	// * qrep data rank **n**	(where **n** is the given match-ranking)
-	// * qrep data stats **n** 	(where **n** is the given match-stats -- kills by type)
-
-	// See the README.md for more information and examples, or use *_command-tree_ help* to see another man-page about the specific command-tree.
-	// -------------------------
 }
