@@ -7,6 +7,8 @@ import (
 	"os/exec"
 	"strconv"
 	"strings"
+
+	Z "github.com/rwxrob/bonzai/z"
 )
 
 type Size struct {
@@ -82,4 +84,16 @@ func GetDefaultDisplay() string {
 	// fmt.Println(string(out))
 
 	return str
+}
+
+func Matches(cmd *Z.Cmd, arg string) bool {
+	if arg == cmd.Name {
+		return true
+	}
+	for _, alias := range cmd.Aliases {
+		if arg == alias {
+			return true
+		}
+	}
+	return false
 }
