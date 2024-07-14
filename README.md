@@ -16,8 +16,14 @@ Optional -- native integration:
 
 Universal install
 ```bash
-make install-go
+make install-go PREFIX=$HOME/.local
 ```
+
+Using Go
+```bash
+go install github.com/BuddhiLW/lazywal/cmd/lazywal@latest 
+```
+
 Arch Linux [AUR](https://aur.archlinux.org/packages/lazywal-cli/)
 ```bash
 yay -S lazywal-cli

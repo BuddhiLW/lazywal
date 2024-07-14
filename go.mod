@@ -1,6 +1,6 @@
-module github.com/BuddhiLW/lazywal-cli
+module github.com/BuddhiLW/lazywal
 
-go 1.22.2
+go 1.22.5
 
 require (
 	github.com/google/uuid v1.6.0
