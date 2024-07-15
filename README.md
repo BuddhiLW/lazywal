@@ -68,20 +68,3 @@ lazywal set /path/to/file display 1920x1080 pywal
 
 ![show-case](./output.gif)
 
-## Tested DEs, WMs
-
-#### Works:
-* GNOME 3 (mutter)
-* Openbox
-* XFCE
-* ratpoison
-* DWM
-* xmonad
-
-#### Works, but has weird quirks:
-* BSPWM
-* i3
-
-#### Doesn't work (for now):
-TODO: test more
-
