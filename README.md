@@ -1,6 +1,6 @@
-# lazywal-cli
+# Lazywal (Go rewrite of [lazywal-cli](https://github.com/FabricatorZayac/lazywal-cli))
 
-Lazywal: a terminal client to setup animated (video-loop) wallpapers as the desktop background.
+Lazywal: a terminal client to setup animated (video-loop) wallpapers as the desktop background. It has some extra-features, like pywal native integration, for the flashy - like me.
 
 Compatible with any OS that uses X-server.
 
@@ -10,6 +10,9 @@ Compatible with any OS that uses X-server.
 Dependencies:
 * [mpv](https://github.com/mpv-player/mpv)
 * [xwinwrap](https://github.com/ujjwal96/xwinwrap) ([aur](https://aur.archlinux.org/packages/xwinwrap-git/))
+- [ffmpeg](https://ffmpeg.org/download.html)
+
+(Probably your favorite OS will have these in the package-manager listings)
 
 Optional -- native integration:
 * [wal](https://github.com/dylanaraps/pywal/wiki/Installation)
