@@ -19,7 +19,7 @@ Optional -- native integration:
 
 Universal install
 ```bash
-make install-go PREFIX=$HOME/.local
+make install PREFIX=$HOME/.local
 ```
 
 Using Go
