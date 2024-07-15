@@ -61,7 +61,7 @@ DESCRIPTION
 
 ### Pywal
 
-If you add `pywal` at the end of your command, then the `lazywal` binary will use `wal` command to update you X-server color-scheme.
+If you add `pywal` at the end of your command, then the `lazywal` binary will use `wal` command to update your X-server color-scheme.
 
 ``` bash
 lazywal set /path/to/file display 1920x1080 pywal
