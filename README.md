@@ -1,7 +1,7 @@
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 **Table of Contents**
 
-- [Lazywal (Go rewrite of [lazywal-cli](https://github.com/FabricatorZayac/lazywal-cli))](#lazywal-go-rewrite-of-lazywal-clihttpsgithubcomfabricatorzayaclazywal-cli)
+- [Lazywal (Go rewrite of lazywal-cli)](#lazywal-go-rewrite-of-lazywal-cli)
     - [Setup](#setup)
     - [Autocompletion](#autocompletion)
     - [Usage](#usage)
@@ -9,7 +9,7 @@
     - [Showcase](#showcase)
 
 <!-- markdown-toc end -->
-# Lazywal (Go rewrite of [lazywal-cli](https://github.com/FabricatorZayac/lazywal-cli))
+# Lazywal (Go rewrite of lazywal-cli)
 
 Lazywal: a terminal client to setup animated (video-loop) wallpapers as the desktop background. It has some extra-features, like pywal native integration, for the flashy - like me.
 
