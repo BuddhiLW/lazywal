@@ -34,6 +34,10 @@ yay -S lazywal-cli
 
 ## Autocompletion
 
+To add auto-completion, you have to add `complete -C lazywal lazywal` at `.bashrc`.
+
+The following script adds it, if it doesn't find the comment "<< lazywal autocompletion <<<<".
+
 ```bash
 bash ./auto-completion.bash
 ```
