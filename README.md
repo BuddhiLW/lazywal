@@ -7,8 +7,12 @@
     - [Usage](#usage)
         - [Pywal](#pywal)
     - [Showcase](#showcase)
+- [Installing dependencies (possibilities)](#installing-dependencies-possibilities)
+    - [xwinwrap](#xwinwrap)
+    - [ffmpeg, mpv (with `brew` or `apt-get`)](#ffmpeg-mpv-with-brew-or-apt-get)
 
 <!-- markdown-toc end -->
+
 # Lazywal (Go rewrite of lazywal-cli)
 
 Lazywal: a terminal client to setup animated (video-loop) wallpapers as the desktop background. It has some extra-features, like pywal native integration, for the flashy - like me.
@@ -109,4 +113,26 @@ lazywal set /path/to/file display 1920x1080 pywal
 ## Showcase
 
 ![show-case](./output.gif)
+
+# Installing dependencies (possibilities)
+## xwinwrap
+
+This one-liner will install xwinwrap either with `curl` or `wget` (but not both).
+
+Uses this [gist](https://gist.github.com/BuddhiLW/5f43e75c81a56106d04cea6bbce0a238).
+
+```bash
+{ command -v curl &> /dev/null && curl -s https://gist.githubusercontent.com/BuddhiLW/5f43e75c81a56106d04cea6bbce0a238/raw/1aedf2fedbbe89d2d00e56560a950a8af4bca111/xwinwrap | bash; } || { command -v wget &> /dev/null && wget -qO- https://gist.githubusercontent.com/BuddhiLW/5f43e75c81a56106d04cea6bbce0a238/raw/1aedf2fedbbe89d2d00e56560a950a8af4bca111/xwinwrap | bash; }
+```
+
+## ffmpeg, mpv (with `brew` or `apt-get`)
+
+```bash
+brew install ffmpeg mpv
+```
+
+```bash
+sudo apt-get install ffmpeg mpv
+```
+
 
