@@ -32,6 +32,9 @@ Dependencies:
 Optional -- native integration:
 * [wal](https://github.com/dylanaraps/pywal/wiki/Installation)
 
+See [Installing dependencies (possibilities)](#installing-dependencies-possibilities) for Linux and MacOS.
+
+
 Universal install
 ```bash
 make install PREFIX=$HOME/.local
@@ -133,6 +136,12 @@ brew install ffmpeg mpv
 
 ```bash
 sudo apt-get install ffmpeg mpv
+```
+
+## Pywal (with pip) -- Optional
+
+``` bash
+pip install pywal
 ```
 
 
