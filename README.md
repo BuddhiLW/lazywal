@@ -13,7 +13,7 @@
 
 <!-- markdown-toc end -->
 
-For more documentation and examples of integration with other systems (Editor, Window Manager etc.) see the wiki: [https://github.com/BuddhiLW/lazywal/wiki/Pywal-Integration](https://github.com/BuddhiLW/lazywal/wiki/Pywal-Integration).
+For more documentation and examples of integration with other systems (Editor, Window Manager etc.) see the wiki: [https://github.com/BuddhiLW/lazywal/wiki](https://github.com/BuddhiLW/lazywal/wiki).
 
 # Lazywal (Go rewrite of lazywal-cli)
 
