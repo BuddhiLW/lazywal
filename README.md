@@ -13,6 +13,8 @@
 
 <!-- markdown-toc end -->
 
+For more documentation and examples of integration with other systems (Editor, Window Manager etc.) see the wiki: [https://github.com/BuddhiLW/lazywal/wiki/Pywal-Integration](https://github.com/BuddhiLW/lazywal/wiki/Pywal-Integration).
+
 # Lazywal (Go rewrite of lazywal-cli)
 
 Lazywal: a terminal client to setup animated (video-loop) wallpapers as the desktop background. It has some extra-features, like pywal native integration, for the flashy - like me.
