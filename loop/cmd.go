@@ -38,6 +38,7 @@ var Cmd = &Z.Cmd{
 		Lazywal: a terminal client to help setup video-loops/gifs as background.
 
 		You can use the following commands:
+
 		* lazywal set **path**  			   (Tries to get first-display screen-size automatically)
 		* lazywal set **path** display **WxH** (Width x Height - e.g. 1440x1080, 2560x1080 etc.)
 		* lazywal kill 						   (Kills all _xwinwrap_ processes running.)
