@@ -19,7 +19,7 @@ func init() {
 var Cmd = &Z.Cmd{
 	Name:      `lazywal`,
 	Summary:   `Lazywal: a terminal client to facilitate setting up video-loops/gifs as background.`,
-	Version:   `v0.5.3`,
+	Version:   `v1.0.0`,
 	Copyright: `Copyright 2021-2024 Zayac-The-Engineer, 2024 Pedro G. Branquinho (Go version)`,
 	License:   `MIT License`,
 	Site:      `buddhilw.com`,
