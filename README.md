@@ -47,10 +47,6 @@ Using Go
 go install github.com/BuddhiLW/lazywal/cmd/lazywal@latest 
 ```
 
-Arch Linux [AUR](https://aur.archlinux.org/packages/lazywal-cli/)
-```bash
-yay -S lazywal-cli
-```
 
 ## Autocompletion
 
