@@ -27,13 +27,13 @@ jobs:
           GOARCH: ${{ matrix.arch }}
         run: |
           mkdir -p dist
-          go build -o dist/dc-${{ matrix.os }}-${{ matrix.arch }} ./cmd/dc
+          go build -o dist/lazywal-${{ matrix.os }}-${{ matrix.arch }} ./cmd/lazywal/main.go
 
       - name: Upload artifact
         uses: actions/upload-artifact@v3
         with:
-          name: dc-${{ matrix.os }}-${{ matrix.arch }}
-          path: dist/dc-${{ matrix.os }}-${{ matrix.arch }}
+          name: lazywal-${{ matrix.os }}-${{ matrix.arch }}
+          path: dist/lazywal-${{ matrix.os }}-${{ matrix.arch }}
 
   release:
     needs: build
