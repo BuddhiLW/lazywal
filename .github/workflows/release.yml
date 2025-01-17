@@ -1,0 +1,53 @@
+name: Release Binaries
+
+on:
+  push:
+    tags:
+      - 'v*' # Trigger on version tags, e.g., v1.0.0
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        os: [linux, darwin]
+        arch: [amd64, arm64]
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: Set up Go
+        uses: actions/setup-go@v4
+        with:
+          go-version: '1.23.2'
+
+      - name: Build binary
+        env:
+          GOOS: ${{ matrix.os }}
+          GOARCH: ${{ matrix.arch }}
+        run: |
+          mkdir -p dist
+          go build -o dist/dc-${{ matrix.os }}-${{ matrix.arch }} ./cmd/dc
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v3
+        with:
+          name: dc-${{ matrix.os }}-${{ matrix.arch }}
+          path: dist/dc-${{ matrix.os }}-${{ matrix.arch }}
+
+  release:
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Download build artifacts
+        uses: actions/download-artifact@v3
+        with:
+          path: dist/
+
+      - name: Create GitHub Release
+        uses: ncipollo/release-action@v1
+        with:
+          tag: ${{ github.ref_name }}
+          name: Release ${{ github.ref_name }}
+          files: dist/*
+

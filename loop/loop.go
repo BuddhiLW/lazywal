@@ -6,6 +6,7 @@ import (
 	"os/exec"
 	"syscall"
 
+	dependencies "github.com/BuddhiLW/lazywal/internal/check"
 	Z "github.com/rwxrob/bonzai/z"
 	"github.com/rwxrob/help"
 )
@@ -69,6 +70,13 @@ var LoopCmd = &Z.Cmd{
 	MinArgs:  0,
 	Commands: []*Z.Cmd{help.Cmd, SetDisplayCmd},
 	Call: func(caller *Z.Cmd, args ...string) error {
+		err := dependencies.TestDepsCmd.Call(caller, args[0])
+		if err != nil {
+			return err
+		}
+		// if Z.Vars.Get("RemainingDeps") != "none" {
+		// _, err := dependencies.CheckReady()
+		// }
 		if len(args) == 0 {
 			help.Cmd.Call(caller, "help")
 			return nil
@@ -118,6 +126,7 @@ var SetDisplayCmd = &Z.Cmd{
 	NumArgs:  1,
 	Commands: []*Z.Cmd{help.Cmd},
 	Call: func(_ *Z.Cmd, args ...string) error {
+
 		err := SetDisplay(args[0])
 		if err != nil {
 			return err
@@ -135,6 +144,13 @@ var PywalCmd = &Z.Cmd{
 	NumArgs:  0,
 	Commands: []*Z.Cmd{help.Cmd},
 	Call: func(_ *Z.Cmd, args ...string) error {
+		available, err := dependencies.IsWalAvailable()
+		if available {
+			fmt.Println("wal is available in your system.")
+		} else {
+			return err
+		}
+
 		Wall.Pywal()
 		return nil
 	},

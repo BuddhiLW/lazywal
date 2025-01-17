@@ -15,6 +15,11 @@
 
 For more documentation and examples of integration with other systems (Editor, Window Manager etc.) see the wiki: [https://github.com/BuddhiLW/lazywal/wiki](https://github.com/BuddhiLW/lazywal/wiki).
 
+## Showcase
+
+![show-case](./output.gif)
+
+
 # Lazywal (Go rewrite of lazywal-cli)
 
 Lazywal: a terminal client to setup animated (video-loop) wallpapers as the desktop background. It has some extra-features, like pywal native integration, for the flashy - like me.
@@ -45,6 +50,40 @@ make install PREFIX=$HOME/.local
 Using Go
 ```bash
 go install github.com/BuddhiLW/lazywal/cmd/lazywal@latest 
+```
+
+
+# Installing dependencies (possibilities)
+## xwinwrap
+
+This one-liner will install xwinwrap either with `curl` or `wget` (but not both).
+
+Uses this [gist](https://gist.github.com/BuddhiLW/5f43e75c81a56106d04cea6bbce0a238).
+
+With `curl`:
+``` bash
+curl -sSL https://gist.githubusercontent.com/BuddhiLW/5f43e75c81a56106d04cea6bbce0a238/raw/1aedf2fedbbe89d2d00e56560a950a8af4bca111/xwinwrap | bash
+```
+
+With `wget`:
+``` bash
+wget -qO- https://gist.githubusercontent.com/BuddhiLW/5f43e75c81a56106d04cea6bbce0a238/raw/1aedf2fedbbe89d2d00e56560a950a8af4bca111/xwinwrap | bash
+```
+
+## ffmpeg, mpv (with `brew` or `apt-get`)
+
+``` bash
+brew install ffmpeg mpv
+```
+
+``` bash
+sudo apt-get install ffmpeg mpv
+```
+
+## Pywal (with pip) -- Optional
+
+``` bash
+pip install pywal
 ```
 
 
@@ -111,35 +150,5 @@ If you add `pywal` at the end of your command, then the `lazywal` binary will us
 lazywal set /path/to/file display 1920x1080 pywal
 ```
 
-## Showcase
-
-![show-case](./output.gif)
-
-# Installing dependencies (possibilities)
-## xwinwrap
-
-This one-liner will install xwinwrap either with `curl` or `wget` (but not both).
-
-Uses this [gist](https://gist.github.com/BuddhiLW/5f43e75c81a56106d04cea6bbce0a238).
-
-```bash
-{ command -v curl &> /dev/null && curl -s https://gist.githubusercontent.com/BuddhiLW/5f43e75c81a56106d04cea6bbce0a238/raw/1aedf2fedbbe89d2d00e56560a950a8af4bca111/xwinwrap | bash; } || { command -v wget &> /dev/null && wget -qO- https://gist.githubusercontent.com/BuddhiLW/5f43e75c81a56106d04cea6bbce0a238/raw/1aedf2fedbbe89d2d00e56560a950a8af4bca111/xwinwrap | bash; }
-```
-
-## ffmpeg, mpv (with `brew` or `apt-get`)
-
-```bash
-brew install ffmpeg mpv
-```
-
-```bash
-sudo apt-get install ffmpeg mpv
-```
-
-## Pywal (with pip) -- Optional
-
-``` bash
-pip install pywal
-```
 
 

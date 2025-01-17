@@ -4,6 +4,7 @@
 package loop
 
 import (
+	dependencies "github.com/BuddhiLW/lazywal/internal/check"
 	Z "github.com/rwxrob/bonzai/z"
 	"github.com/rwxrob/conf"
 	"github.com/rwxrob/help"
@@ -30,7 +31,7 @@ var Cmd = &Z.Cmd{
 		help.Cmd, conf.Cmd, vars.Cmd,
 
 		// local commands (in this module)
-		LoopCmd, ClearCmd, PywalCmd,
+		LoopCmd, ClearCmd, PywalCmd, dependencies.TestDepsCmd,
 	},
 
 	// TODO: increment Description
@@ -39,9 +40,9 @@ var Cmd = &Z.Cmd{
 
 		You can use the following commands:
 
-		* lazywal set **path**  			   (Tries to get first-display screen-size automatically)
-		* lazywal set **path** display **WxH** (Width x Height - e.g. 1440x1080, 2560x1080 etc.)
-		* lazywal kill 						   (Kills all _xwinwrap_ processes running.)
+        * lazywal set **path**  			   (Tries to get first-display screen-size automatically)
+        * lazywal set **path** display **WxH** (Width x Height - e.g. 1440x1080, 2560x1080 etc.)
+        * lazywal kill 						   (Kills all _xwinwrap_ processes running.)
 
 		Note: **path** should be the path to the video-loop file.
 
