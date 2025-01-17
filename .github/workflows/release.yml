@@ -30,7 +30,7 @@ jobs:
           go build -o dist/lazywal-${{ matrix.os }}-${{ matrix.arch }} ./cmd/lazywal/main.go
 
       - name: Upload artifact
-        uses: actions/upload-artifact@v3
+        uses: actions/upload-artifact@v4
         with:
           name: lazywal-${{ matrix.os }}-${{ matrix.arch }}
           path: dist/lazywal-${{ matrix.os }}-${{ matrix.arch }}
@@ -40,7 +40,7 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Download build artifacts
-        uses: actions/download-artifact@v3
+        uses: actions/download-artifact@v4
         with:
           path: dist/
 
@@ -49,5 +49,5 @@ jobs:
         with:
           tag: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
-          files: dist/*
+          artifacts: dist/*
 
