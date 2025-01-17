@@ -123,23 +123,42 @@ lazywal help
 ```
 
 ``` text
+NAME
+       lazywal - Lazywal: a terminal client to facilitate setting up video-loops/gifs as background.
+
+SYNOPSIS
+       lazywal COMMAND
+
 COMMANDS
-       help              - display help similar to man page format
-       set-path|path|set - Renders the file in <path> as wallpaper with specified display dimension.
-       kill|clear        - Kill all process related with 'xwinwrap' that may be hanging.
+       help                      - display help similar to man page format
+       conf                      - manage conf in /home/jacobi/.config/lazywal/config.yaml
+       var                       - cache variables in /home/jacobi/.cache/lazywal/vars
+       set-path|path|set         - Renders the file in <path> as wallpaper with specified display dimension.
+       kill|clear                - Kill all process related with 'xwinwrap' that may be hanging.
+       update-pywal|colors|pywal - Update pywal scheme to use a random frame from the loop.
+       dependencies|test         - Test to see if all dependencies are available in your system.
 
 DESCRIPTION
        Lazywal: a terminal client to help setup video-loops/gifs as background.
 
-       You can use the following commands: 
-       - lazywal set <path>               (Tries to get first-display screen-size automatically) 
-       - lazywal set <path> display <WxH> (Width x Height - e.g. 1440x1080, 2560x1080 etc.) 
-       - lazywal kill                     (Kills all _xwinwrap_ processes running.)
+       You can use the following commands:
+
+       * lazywal set path            (Tries to get first-display screen-size automatically)
+       * lazywal set path display WxH  (Width x Height - e.g. 1440x1080, 2560x1080 etc.)
+       * lazywal kill                  (Kills all _xwinwrap_ processes running.)
 
        Note: path should be the path to the video-loop file.
 
-       See the README.md for more information and examples, or use *_command-tree_
-       help* to see another man-page about the specific command-tree.
+       See the README.md for more information and examples, or use *_command-tree_ help* to see another man-page about the specific command-tree.
+
+CONTACT
+       Site:   buddhilw.com
+       Source: git@github.com/BuddhiLW/lazywal.git
+       Issues: github.com/BuddhiLW/lazywal/issues
+
+LEGAL
+       lazywal (v1.0.3) Copyright 2021-2024 Zayac-The-Engineer, 2024 Pedro G. Branquinho (Go version)
+       License MIT License
 ```
 
 ### Pywal
