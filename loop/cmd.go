@@ -19,7 +19,7 @@ func init() {
 var Cmd = &Z.Cmd{
 	Name:      `lazywal`,
 	Summary:   `Lazywal: a terminal client to facilitate setting up video-loops/gifs as background.`,
-	Version:   `v1.0.0`,
+	Version:   `v1.0.3`,
 	Copyright: `Copyright 2021-2024 Zayac-The-Engineer, 2024 Pedro G. Branquinho (Go version)`,
 	License:   `MIT License`,
 	Site:      `buddhilw.com`,
@@ -31,8 +31,7 @@ var Cmd = &Z.Cmd{
 		help.Cmd, conf.Cmd, vars.Cmd,
 
 		// local commands (in this module)
-		LoopCmd, ClearCmd, PywalCmd, dependencies.TestDepsCmd,
-	},
+		LoopCmd, ClearCmd, PywalCmd, dependencies.TestDepsCmd},
 
 	// TODO: increment Description
 	Description: `
@@ -40,9 +39,9 @@ var Cmd = &Z.Cmd{
 
 		You can use the following commands:
 
-        * lazywal set **path**  			   (Tries to get first-display screen-size automatically)
-        * lazywal set **path** display **WxH** (Width x Height - e.g. 1440x1080, 2560x1080 etc.)
-        * lazywal kill 						   (Kills all _xwinwrap_ processes running.)
+		* lazywal set **path**            (Tries to get first-display screen-size automatically)
+		* lazywal set **path** display **WxH**  (Width x Height - e.g. 1440x1080, 2560x1080 etc.)
+		* lazywal kill                  (Kills all _xwinwrap_ processes running.)
 
 		Note: **path** should be the path to the video-loop file.
 
