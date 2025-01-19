@@ -13,7 +13,7 @@
 
 <!-- markdown-toc end -->
 
-[![GoDoc](https://pkg.go.dev/github.com/BuddhiLW/lazywal?status.svg)](https://godoc.org/github.com/BuddhiLW/lazywal)
+[![GoDoc](https://godoc.org/github.com/BuddhiLW/lazywal?status.svg)](https://godoc.org/github.com/BuddhiLW/lazywal)
 [![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
 
 For more documentation and examples of integration with other systems (Editor, Window Manager etc.) see the wiki: [https://github.com/BuddhiLW/lazywal/wiki](https://github.com/BuddhiLW/lazywal/wiki).
