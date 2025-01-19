@@ -28,6 +28,8 @@ Compatible with any OS that uses X-server.
 
 <!-- This is a minimalistic animated wallpaper manager for Linux and probably BSD. Was created for me to see if I could do it and to learn how to create AUR packages. -->
 ## Setup
+[![GoDoc](https://pkg.go.dev/github.com/BuddhiLW/lazywal?status.svg)](https://pkg.go.dev/github.com/BuddhiLW/lazywal#readme-showcase)
+[![License](https://img.shields.io/badge/license-MIT-brightgreen.svg)](LICENSE)
 
 Dependencies:
 * [mpv](https://github.com/mpv-player/mpv)
