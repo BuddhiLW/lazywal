@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os/exec"
+	"runtime"
 	"syscall"
 
 	dependencies "github.com/BuddhiLW/lazywal/internal/check"
@@ -74,10 +75,15 @@ func (w *Wallpaper) startOnMonitor(monitor Monitor) error {
 	log.Printf("Running command: %s", commandString)
 	cmd := exec.Command("bash", "-c", commandString)
 
-	// Set up process to run in its own process group
-	cmd.SysProcAttr = &syscall.SysProcAttr{
-		Setpgid: true, // Create new process group
-		Pgid:    0,    // New process group
+	// Set up process attributes based on OS
+	cmd.SysProcAttr = &syscall.SysProcAttr{}
+
+	// Process group settings only available on Unix systems
+	if runtime.GOOS != "windows" {
+		cmd.SysProcAttr = &syscall.SysProcAttr{
+			Setpgid: true, // Create new process group
+			Pgid:    0,    // New process group
+		}
 	}
 
 	// Redirect stdout/stderr to /dev/null to prevent pipe issues
