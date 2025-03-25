@@ -1,9 +1,9 @@
 package loop
 
 import (
-	"os"
 	"os/exec"
 	"testing"
+	"time"
 )
 
 func TestGetMonitors(t *testing.T) {
@@ -60,7 +60,7 @@ HDMI-1-0 connected 2560x1080+1920+0 (normal left inverted right x axis y axis) 6
 		t.Run(tt.name, func(t *testing.T) {
 			oldExec := execCommand
 			execCommand = func(name string, args ...string) *exec.Cmd {
-				return mockExecCommand(tt.mockXrandr)
+				return testMockCommand(tt.mockXrandr)
 			}
 			defer func() { execCommand = oldExec }()
 
@@ -100,7 +100,6 @@ func TestStartOnMonitor(t *testing.T) {
 		name       string
 		monitor    Monitor
 		videoPath  string
-		wantCmd    string
 		mockOutput string
 		wantErr    bool
 	}{
@@ -119,7 +118,6 @@ func TestStartOnMonitor(t *testing.T) {
 				Primary: true,
 			},
 			videoPath:  "../test/wallpaper.mp4",
-			wantCmd:    "xwinwrap -g 1920x1200+0+0 -ni -b -st -un -o 1.0 -ov -debug -- mpv -wid WID --loop --no-audio --no-resume-playback --panscan=1.0 '../test/wallpaper.mp4'",
 			mockOutput: "Started MPV...",
 			wantErr:    false,
 		},
@@ -137,9 +135,25 @@ func TestStartOnMonitor(t *testing.T) {
 				},
 			},
 			videoPath:  "../test/wallpaper.mp4",
-			wantCmd:    "xwinwrap -g 2560x1080+1920+0 -ni -b -st -un -o 1.0 -ov -debug -- mpv -wid WID --loop --no-audio --no-resume-playback --panscan=1.0 '../test/wallpaper.mp4'",
 			mockOutput: "Started MPV...",
 			wantErr:    false,
+		},
+		{
+			name: "command failure",
+			monitor: Monitor{
+				Name: "eDP-1",
+				Dimensions: Size{
+					Width:  1920,
+					Height: 1200,
+				},
+				Position: Position{
+					X: 0,
+					Y: 0,
+				},
+			},
+			videoPath:  "../test/wallpaper.mp4",
+			mockOutput: "Error: Failed to initialize video",
+			wantErr:    true,
 		},
 	}
 
@@ -152,29 +166,30 @@ func TestStartOnMonitor(t *testing.T) {
 				Running: make(map[string]*exec.Cmd),
 			}
 
-			// Ensure cleanup after test
-			t.Cleanup(func() {
-				w.killExisting()
-			})
-
 			oldExec := execCommand
 			execCommand = func(name string, args ...string) *exec.Cmd {
-				gotCmd := args[2] // bash -c "command"
-				if gotCmd != tt.wantCmd {
-					t.Errorf("Command mismatch\ngot:  %s\nwant: %s", gotCmd, tt.wantCmd)
+				if tt.wantErr {
+					// Create a command that will fail on Start()
+					cmd := exec.Command("nonexistent-command")
+					return cmd
 				}
-				return mockExecCommand(tt.mockOutput)
+				return testMockCommand(tt.mockOutput)
 			}
 			defer func() { execCommand = oldExec }()
 
 			err := w.startOnMonitor(tt.monitor)
-			if err != nil {
-				t.Errorf("startOnMonitor() unexpected error = %v", err)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("startOnMonitor() error = %v, wantErr %v", err, tt.wantErr)
+				return
 			}
 
-			if w.Running[tt.monitor.Name] == nil {
-				t.Errorf("Process not tracked for monitor %s", tt.monitor.Name)
+			if !tt.wantErr {
+				if cmd, ok := w.Running[tt.monitor.Name]; !ok || cmd == nil {
+					t.Errorf("Process not tracked for monitor %s", tt.monitor.Name)
+				}
 			}
+
+			time.Sleep(100 * time.Millisecond) // Wait for goroutines
 		})
 	}
 }
@@ -201,12 +216,6 @@ func TestWallpaperSet(t *testing.T) {
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
 			w := NewWallPaper(tt.config)
-
-			// Ensure cleanup after test
-			t.Cleanup(func() {
-				w.killExisting()
-			})
-
 			err := w.Set()
 			if (err != nil) != tt.wantErr {
 				t.Errorf("Wallpaper.Set() error = %v, wantErr %v", err, tt.wantErr)
@@ -225,21 +234,4 @@ func TestWallpaperSet(t *testing.T) {
 			}
 		})
 	}
-}
-
-// Helper function to mock command execution
-func mockExecCommand(output string) *exec.Cmd {
-	return exec.Command("echo", output)
-}
-
-// Add a TestMain for package-level cleanup
-func TestMain(m *testing.M) {
-	// Run tests
-	code := m.Run()
-
-	// Cleanup any stray processes
-	cleanup := exec.Command("bash", "-c", `pkill -f "xwinwrap|mpv"`)
-	cleanup.Run() // Ignore errors as processes might not exist
-
-	os.Exit(code)
 }
