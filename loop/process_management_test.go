@@ -66,14 +66,6 @@ func mockExecCommand(childPIDs []string) func(string, ...string) *exec.Cmd {
 	}
 }
 
-func cleanupVars() {
-	Z.Vars.Del(VarPIDs)
-	monitors, _ := GetMonitors()
-	for _, monitor := range monitors {
-		Z.Vars.Del(VarMonitorPIDs + "_" + monitor.Name)
-	}
-}
-
 func contains(slice []int, item int) bool {
 	for _, i := range slice {
 		if i == item {
