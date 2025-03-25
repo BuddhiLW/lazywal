@@ -1,20 +1,19 @@
 package loop
 
-import "log"
+import "fmt"
 
 func SetDisplay(display string) error {
-	log.Printf("Setting wallpaper to dimension-position of: %v", display)
 	dimension := display
 
-	if validDimension(dimension) {
-		size, err := parseSize(dimension)
-		if err != nil {
-			return err
-		}
-		Wall.Config.Dimensions = size
-		return nil
-	} else {
-		log.Fatal("Dimension parameter is incorrect")
+	if !validDimension(dimension) {
+		return fmt.Errorf("invalid dimension parameter: %s", dimension)
 	}
+
+	size, err := parseSize(dimension)
+	if err != nil {
+		return err
+	}
+
+	Wall.Config.Dimensions = size
 	return nil
 }

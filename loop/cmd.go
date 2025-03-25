@@ -12,8 +12,12 @@ import (
 )
 
 func init() {
-	Z.Conf.SoftInit()
-	Z.Vars.SoftInit()
+	if err := Z.Conf.SoftInit(); err != nil {
+		panic(err)
+	}
+	if err := Z.Vars.SoftInit(); err != nil {
+		panic(err)
+	}
 }
 
 var Cmd = &Z.Cmd{

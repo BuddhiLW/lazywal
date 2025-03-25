@@ -25,17 +25,21 @@ func CheckReady() (string, bool) {
 			if remaining == "" {
 				remaining = binary
 			} else {
-				remaining = fmt.Sprintf("%s, %s", remaining, binary)
+				remaining += ", " + binary
 			}
 		}
 	}
 
 	if remaining != "" {
-		Z.Vars.Set("RemainingDeps", remaining)
+		if err := Z.Vars.Set("RemainingDeps", remaining); err != nil {
+			return remaining, false
+		}
 		return remaining, false
 	}
 
-	Z.Vars.Set("RemainingDeps", "none")
+	if err := Z.Vars.Set("RemainingDeps", "none"); err != nil {
+		return "", false
+	}
 	return "", true
 }
 

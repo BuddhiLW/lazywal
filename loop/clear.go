@@ -17,6 +17,7 @@ var ClearCmd = &Z.Cmd{
 	Commands: []*Z.Cmd{help.Cmd, SetDisplayCmd},
 	Call: func(caller *Z.Cmd, _ ...string) error {
 		fmt.Println("Killing all xwinwrap processes")
-		return exec.Command("bash", "-c", fmt.Sprintf("kill -9 $(pidof xwinwrap)")).Run()
+		cmd := exec.Command("pkill", "xwinwrap")
+		return cmd.Run()
 	},
 }

@@ -11,6 +11,8 @@ import (
 	Z "github.com/rwxrob/bonzai/z"
 )
 
+var execCommand = exec.Command
+
 type Size struct {
 	Width  float32
 	Height float32
@@ -74,16 +76,13 @@ func parseSize(s string) (*Size, error) {
 }
 
 func GetDefaultDisplay() string {
-	cmd := exec.Command("bash", "-c", "xdpyinfo | grep dimensions | sed -r 's/^[^0-9]*([0-9]+x[0-9]+).*$/\\1/'")
+	cmd := execCommand("bash", "-c", "xdpyinfo | grep dimensions | sed -r 's/^[^0-9]*([0-9]+x[0-9]+).*$/\\1/'")
 	out, err := cmd.Output()
-	str := strings.Trim(string(out), "\n")
 	if err != nil {
 		log.Println(err)
 		panic(err)
 	}
-	// fmt.Println(string(out))
-
-	return str
+	return strings.TrimSpace(string(out))
 }
 
 func Matches(cmd *Z.Cmd, arg string) bool {
@@ -96,4 +95,77 @@ func Matches(cmd *Z.Cmd, arg string) bool {
 		}
 	}
 	return false
+}
+
+func GetMonitors() ([]Monitor, error) {
+	cmd := execCommand("xrandr", "--current")
+	out, err := cmd.Output()
+	if err != nil {
+		return nil, fmt.Errorf("failed to get monitor info: %w", err)
+	}
+
+	var monitors []Monitor
+	lines := strings.Split(string(out), "\n")
+
+	for _, line := range lines {
+		if strings.Contains(line, " connected ") {
+			fields := strings.Fields(line)
+			if len(fields) < 3 {
+				continue
+			}
+
+			name := fields[0]
+			var geometry string
+			isPrimary := strings.Contains(line, "primary")
+
+			// Find the active resolution and position
+			for _, field := range fields {
+				if strings.Contains(field, "x") && strings.Contains(field, "+") {
+					geometry = field
+					break
+				}
+			}
+
+			if geometry == "" {
+				continue
+			}
+
+			// Parse geometry string (e.g., "1920x1080+1920+0")
+			parts := strings.Split(geometry, "+")
+			if len(parts) != 3 {
+				continue
+			}
+
+			size, err := parseSize(parts[0])
+			if err != nil {
+				continue
+			}
+
+			x, err := strconv.ParseFloat(parts[1], 32)
+			if err != nil {
+				continue
+			}
+
+			y, err := strconv.ParseFloat(parts[2], 32)
+			if err != nil {
+				continue
+			}
+
+			monitors = append(monitors, Monitor{
+				Name:       name,
+				Dimensions: *size,
+				Position: Position{
+					X: float32(x),
+					Y: float32(y),
+				},
+				Primary: isPrimary,
+			})
+		}
+	}
+
+	if len(monitors) == 0 {
+		return nil, fmt.Errorf("no active monitors found")
+	}
+
+	return monitors, nil
 }

@@ -23,43 +23,87 @@ func NewConfig() *Config {
 }
 
 type Wallpaper struct {
-	Config *Config
+	Config   *Config
+	Running  map[string]*exec.Cmd // Track running processes per monitor
+	Monitors []Monitor
 }
 
 func NewWallPaper(setup *Config) *Wallpaper {
-	// Path:       setup["Path"],
-	// Dimensions: setup["Dimensions"],
-	// LastUsed:   setup["Last_used"],
 	return &Wallpaper{
-		Config: setup,
+		Config:  setup,
+		Running: make(map[string]*exec.Cmd),
 	}
 }
 
 var (
 	Wall           *Wallpaper = NewWallPaper(NewConfig())
 	defaultDisplay string     = GetDefaultDisplay()
-	xwinwrapArgs   string     = fmt.Sprintf("-g %v -ni -b -st -un -o 1.0 -ov -debug", defaultDisplay)
 	mpvArgs        string     = "-wid WID --loop --no-audio --no-resume-playback --panscan=1.0"
 )
 
-func (w *Wallpaper) Set() {
-	commandString := fmt.Sprintf("xwinwrap %s -- mpv %s %s", xwinwrapArgs, mpvArgs, w.Config.Path)
+func (w *Wallpaper) Set() error {
+	monitors, err := GetMonitors()
+	if err != nil {
+		return fmt.Errorf("failed to get monitor info: %w", err)
+	}
+
+	// Kill existing processes
+	w.killExisting()
+
+	// Start new processes for each monitor
+	for _, monitor := range monitors {
+		if err := w.startOnMonitor(monitor); err != nil {
+			log.Printf("Failed to start on monitor %s: %v", monitor.Name, err)
+			continue
+		}
+	}
+
+	return nil
+}
+
+func (w *Wallpaper) startOnMonitor(monitor Monitor) error {
+	geometry := fmt.Sprintf("%dx%d+%d+%d",
+		int(monitor.Dimensions.Width),
+		int(monitor.Dimensions.Height),
+		int(monitor.Position.X),
+		int(monitor.Position.Y))
+
+	xwinwrapArgs := fmt.Sprintf("-g %s -ni -b -st -un -o 1.0 -ov -debug", geometry)
+	commandString := fmt.Sprintf("xwinwrap %s -- mpv %s '%s'", xwinwrapArgs, mpvArgs, w.Config.Path)
+
+	log.Printf("Running command: %s", commandString)
 	cmd := exec.Command("bash", "-c", commandString)
 
-	// Detach process from parent
-	cmd.SysProcAttr = &syscall.SysProcAttr{Setsid: true}
-
-	err := cmd.Start()
-	if err != nil {
-		log.Println("Error starting command:", err)
-		return
-	}
-	if Z.Vars.Get("PID") != "" {
-		exec.Command("bash", "-c", fmt.Sprintf("kill -9 %s", Z.Vars.Get("PID"))).Run()
+	// Set up process to run in its own process group
+	cmd.SysProcAttr = &syscall.SysProcAttr{
+		Setpgid: true, // Create new process group
+		Pgid:    0,    // New process group
 	}
 
-	Z.Vars.Set("PID", fmt.Sprintf("%v", cmd.Process.Pid))
-	log.Println("Running PID: ", Z.Vars.Get("PID"))
+	// Redirect stdout/stderr to /dev/null to prevent pipe issues
+	cmd.Stdout = nil
+	cmd.Stderr = nil
+
+	if err := cmd.Start(); err != nil {
+		return fmt.Errorf("failed to start command: %w", err)
+	}
+
+	// Don't wait for the process, let it run in background
+	w.Running[monitor.Name] = cmd
+	log.Printf("Started wallpaper on monitor %s (PID: %d)", monitor.Name, cmd.Process.Pid)
+
+	return nil
+}
+
+func (w *Wallpaper) killExisting() {
+	for monitor, cmd := range w.Running {
+		if cmd != nil && cmd.Process != nil {
+			if err := cmd.Process.Kill(); err != nil {
+				log.Printf("Failed to kill process on monitor %s: %v", monitor, err)
+			}
+		}
+	}
+	w.Running = make(map[string]*exec.Cmd)
 }
 
 var LoopCmd = &Z.Cmd{
@@ -70,20 +114,8 @@ var LoopCmd = &Z.Cmd{
 	MinArgs:  0,
 	Commands: []*Z.Cmd{help.Cmd, SetDisplayCmd},
 	Call: func(caller *Z.Cmd, args ...string) error {
-		err := dependencies.TestDepsCmd.Call(caller, args[0])
-		if err != nil {
-			return err
-		}
-		// if Z.Vars.Get("RemainingDeps") != "none" {
-		// _, err := dependencies.CheckReady()
-		// }
 		if len(args) == 0 {
-			help.Cmd.Call(caller, "help")
-			return nil
-		}
-
-		if len(args) < 2 {
-			err := SetDisplayCmd.Call(caller, defaultDisplay)
+			err := help.Cmd.Call(caller, "help")
 			if err != nil {
 				return err
 			}
@@ -95,8 +127,22 @@ var LoopCmd = &Z.Cmd{
 			log.Fatal("Invalid Path")
 		}
 
+		// Set the path before checking dependencies
 		log.Print("File chosen: ", path)
-		Wall.Config.Path = args[0]
+		Wall.Config.Path = path
+
+		err := dependencies.TestDepsCmd.Call(caller, args[0])
+		if err != nil {
+			return err
+		}
+
+		if len(args) < 2 {
+			err := SetDisplayCmd.Call(caller, defaultDisplay)
+			if err != nil {
+				return err
+			}
+			return nil
+		}
 
 		if len(args) > 2 && args[1] == "display" {
 			err := SetDisplayCmd.Call(caller, args[2:]...)
@@ -126,13 +172,11 @@ var SetDisplayCmd = &Z.Cmd{
 	NumArgs:  1,
 	Commands: []*Z.Cmd{help.Cmd},
 	Call: func(_ *Z.Cmd, args ...string) error {
-
 		err := SetDisplay(args[0])
 		if err != nil {
 			return err
 		}
-		Wall.Set()
-		return nil
+		return Wall.Set()
 	},
 }
 
