@@ -10,8 +10,24 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [linux, darwin]
-        arch: [amd64, arm64]
+        include:
+          # Linux builds
+          - os: linux
+            arch: amd64
+          - os: linux
+            arch: arm64
+          - os: linux
+            arch: arm
+          # macOS builds
+          - os: darwin
+            arch: amd64
+          - os: darwin
+            arch: arm64
+          # Windows builds
+          - os: windows
+            arch: amd64
+          - os: windows
+            arch: arm64
     steps:
       - name: Checkout code
         uses: actions/checkout@v3
@@ -19,7 +35,7 @@ jobs:
       - name: Set up Go
         uses: actions/setup-go@v4
         with:
-          go-version: '1.23.2'
+          go-version: '1.24.0'
 
       - name: Build binary
         env:
@@ -27,13 +43,17 @@ jobs:
           GOARCH: ${{ matrix.arch }}
         run: |
           mkdir -p dist
-          go build -o dist/lazywal-${{ matrix.os }}-${{ matrix.arch }} ./cmd/lazywal/main.go
+          if [ "${{ matrix.os }}" = "windows" ]; then
+            go build -o dist/lazywal-${{ matrix.os }}-${{ matrix.arch }}.exe ./cmd/lazywal
+          else
+            go build -o dist/lazywal-${{ matrix.os }}-${{ matrix.arch }} ./cmd/lazywal
+          fi
 
       - name: Upload artifact
         uses: actions/upload-artifact@v4
         with:
           name: lazywal-${{ matrix.os }}-${{ matrix.arch }}
-          path: dist/lazywal-${{ matrix.os }}-${{ matrix.arch }}
+          path: dist/lazywal-${{ matrix.os }}-${{ matrix.arch }}*
 
   release:
     needs: build
@@ -50,4 +70,18 @@ jobs:
           tag: ${{ github.ref_name }}
           name: Release ${{ github.ref_name }}
           artifacts: dist/*
+          generateReleaseNotes: true
+          body: |
+            ## Lazywal ${{ github.ref_name }}
+            
+            ### Downloads
+            - Linux: `lazywal-linux-amd64`, `lazywal-linux-arm64`, `lazywal-linux-arm`
+            - macOS: `lazywal-darwin-amd64`, `lazywal-darwin-arm64` (Apple Silicon)
+            - Windows: `lazywal-windows-amd64.exe`, `lazywal-windows-arm64.exe`
+            
+            ### Dependencies
+            Requires:
+            - xwinwrap
+            - mpv
+            - xrandr
 
