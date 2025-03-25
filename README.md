@@ -1,7 +1,7 @@
 <!-- markdown-toc start - Don't edit this section. Run M-x markdown-toc-refresh-toc -->
 **Table of Contents**
 
-- [Lazywal (Go rewrite of lazywal-cli)](#lazywal-go-rewrite-of-lazywal-cli)
+- [Lazywal - Multi-monitor Video Wallpaper Manager](#lazywal---multi-monitor-video-wallpaper-manager)
     - [Setup](#setup)
     - [Autocompletion](#autocompletion)
     - [Usage](#usage)
@@ -21,6 +21,62 @@ For more documentation and examples of integration with other systems (Editor, W
 ## Showcase
 
 ![show-case](./output.gif)
+
+
+# Lazywal - Multi-monitor Video Wallpaper Manager
+
+Lazywal is a terminal client for setting up animated wallpapers on Linux systems with X11. It supports:
+- Multi-monitor setups with correct positioning
+- Automatic monitor detection
+- Video files and animated GIFs
+- Pywal integration for system-wide color schemes
+
+## Installation
+
+### From Releases
+Download the appropriate binary for your system from the [releases page](https://github.com/BuddhiLW/lazywal/releases).
+
+### Using Go
+```bash
+go install github.com/BuddhiLW/lazywal/cmd/lazywal@latest
+```
+
+### Dependencies
+Required:
+* [mpv](https://github.com/mpv-player/mpv) - Video playback
+* [xwinwrap](https://github.com/ujjwal96/xwinwrap) - Window creation
+* [xrandr](https://www.x.org/wiki/Projects/XRandR/) - Monitor detection
+
+Optional:
+* [pywal](https://github.com/dylanaraps/pywal) - Color scheme generation
+
+## Usage
+
+Basic usage:
+```bash
+# Auto-detect monitors and set wallpaper
+lazywal set /path/to/video.mp4
+
+# Set wallpaper with specific display size
+lazywal set /path/to/video.mp4 display 1920x1080
+
+# Set wallpaper and update color scheme
+lazywal set /path/to/video.mp4 pywal
+
+# Stop all wallpapers
+lazywal kill
+```
+
+For more documentation and examples, see the [wiki](https://github.com/BuddhiLW/lazywal/wiki).
+
+## Multi-monitor Support
+Lazywal automatically detects your monitor configuration and positions wallpapers correctly on each screen. No manual configuration needed!
+
+## Contributing
+Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
+
+## License
+[MIT License](LICENSE)
 
 
 # Lazywal (Go rewrite of lazywal-cli)

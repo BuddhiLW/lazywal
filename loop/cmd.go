@@ -1,5 +1,5 @@
-// Copyright 2024 qrep Pedro G. Branquinho
-// SPDX-License-Identifier: Apache-2.0
+// Copyright 2025 lazywal Pedro G. Branquinho
+// SPDX-License-Identifier: MIT
 
 package loop
 
@@ -37,18 +37,28 @@ var Cmd = &Z.Cmd{
 		// local commands (in this module)
 		LoopCmd, ClearCmd, PywalCmd, dependencies.TestDepsCmd},
 
-	// TODO: increment Description
 	Description: `
 		Lazywal: a terminal client to help setup video-loops/gifs as background.
 
 		You can use the following commands:
 
-		* lazywal set **path**            (Tries to get first-display screen-size automatically)
-		* lazywal set **path** display **WxH**  (Width x Height - e.g. 1440x1080, 2560x1080 etc.)
-		* lazywal kill                  (Kills all _xwinwrap_ processes running.)
+		* lazywal set <path>                    (Auto-detects monitor configuration)
+		* lazywal set <path> display <WxH>      (Manual display size - e.g. 1440x1080)
+		* lazywal kill                          (Kills all xwinwrap processes)
+		* lazywal pywal                         (Updates color scheme using pywal)
 
-		Note: **path** should be the path to the video-loop file.
+		Features:
+		* Multi-monitor support with correct positioning
+		* Automatic monitor detection
+		* Pywal integration for system-wide color schemes
+		* Handles video files and animated GIFs
 
-		See the README.md for more information and examples, or use *_command-tree_ help* to see another man-page about the specific command-tree.
+		Dependencies:
+		* xwinwrap - For window creation
+		* mpv     - For video playback
+		* xrandr  - For monitor detection
+		* pywal   - Optional, for color scheme generation
+
+		See the README.md for more information and examples.
 		`,
 }
