@@ -6,6 +6,7 @@
     - [Autocompletion](#autocompletion)
     - [Usage](#usage)
         - [Pywal](#pywal)
+    - [MCP Server](#mcp-server)
     - [Showcase](#showcase)
 - [Installing dependencies (possibilities)](#installing-dependencies-possibilities)
     - [xwinwrap](#xwinwrap)
@@ -71,6 +72,49 @@ For more documentation and examples, see the [wiki](https://github.com/BuddhiLW/
 
 ## Multi-monitor Support
 Lazywal automatically detects your monitor configuration and positions wallpapers correctly on each screen. No manual configuration needed!
+
+## MCP Server
+
+Lazywal includes an MCP (Model Context Protocol) server that allows LLMs like Claude to control your wallpaper. This enables AI assistants to change your background based on context, mood, or requests.
+
+### Installation
+
+```bash
+# Build and install both lazywal and lazywal-mcp
+make install PREFIX=$HOME/.local
+```
+
+### Configuration
+
+Add to your Claude Code MCP settings (`~/.claude/claude_desktop_config.json`):
+
+```json
+{
+  "mcpServers": {
+    "lazywal": {
+      "command": "lazywal-mcp"
+    }
+  }
+}
+```
+
+### Available Tools
+
+| Tool | Description |
+|------|-------------|
+| `set_wallpaper` | Set a video/GIF as wallpaper. Requires `path` parameter. |
+| `clear_wallpaper` | Stop all wallpaper processes |
+| `list_monitors` | Get connected monitors with dimensions and positions |
+| `get_status` | Get current wallpaper path, PIDs, and running state |
+| `apply_pywal` | Extract frame from wallpaper and apply pywal colors |
+
+### Example Usage
+
+Once configured, you can ask Claude things like:
+- *"Set my wallpaper to ~/Videos/ocean.mp4"*
+- *"What monitors do I have connected?"*
+- *"Update my terminal colors to match the wallpaper"*
+- *"Clear my wallpaper"*
 
 ## Contributing
 Pull requests are welcome! For major changes, please open an issue first to discuss what you would like to change.
