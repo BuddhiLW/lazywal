@@ -54,7 +54,7 @@ var HelpCmd = &bonzai.Cmd{
 var Cmd = &bonzai.Cmd{
 	Name:  `lazywal`,
 	Short: `video/gif wallpaper client`,
-	Vers:  `v1.2.0`,
+	Vers:  `v1.3.0`,
 
 	Cmds: []*bonzai.Cmd{
 		HelpCmd,
