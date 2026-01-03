@@ -3,8 +3,6 @@ package loop
 import (
 	"os/exec"
 	"testing"
-
-	Z "github.com/rwxrob/bonzai/z"
 )
 
 func testSetupWallpaper(t *testing.T) *Wallpaper {
@@ -25,11 +23,9 @@ func testContains(slice []int, item int) bool {
 }
 
 func cleanupVars() {
-	Z.Vars.Del(VarPIDs)
-	monitors, _ := GetMonitors()
-	for _, monitor := range monitors {
-		Z.Vars.Del(VarMonitorPIDs + "_" + monitor.Name)
-	}
+	// Clear in-memory storage
+	Wall.pids = make(map[string]string)
+	Wall.Running = make(map[string]*exec.Cmd)
 	// Kill any stray processes
 	exec.Command("pkill", "-f", "xwinwrap").Run()
 	exec.Command("pkill", "-f", "mpv").Run()

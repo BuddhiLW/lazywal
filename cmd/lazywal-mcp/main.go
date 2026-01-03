@@ -6,13 +6,15 @@ package main
 import (
 	"log"
 
-	lazywalmcp "github.com/BuddhiLW/lazywal/mcp"
+	"github.com/BuddhiLW/lazywal/loop"
 	"github.com/mark3labs/mcp-go/server"
+	bmcp "github.com/rwxrob/bonzai/mcp"
 )
 
 func main() {
-	// Create the MCP server
-	s := lazywalmcp.NewServer()
+	// Create the MCP server from Bonzai command tree
+	// OnlyTagged() ensures only commands with Mcp metadata are exposed
+	s := bmcp.NewServer(loop.Cmd, bmcp.OnlyTagged())
 
 	// Start the server with stdio transport
 	if err := server.ServeStdio(s); err != nil {

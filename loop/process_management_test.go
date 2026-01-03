@@ -4,17 +4,10 @@ import (
 	"os/exec"
 	"strings"
 	"testing"
-
-	//"time"
-
-	Z "github.com/rwxrob/bonzai/z"
 )
 
 func TestProcessManagementSuite(t *testing.T) {
 	// Setup for all tests
-	if err := Z.Vars.Init(); err != nil {
-		t.Fatalf("Failed to initialize Z.Vars: %v", err)
-	}
 	originalExec := execCommand
 	defer func() {
 		execCommand = originalExec

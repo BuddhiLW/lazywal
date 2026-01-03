@@ -8,7 +8,7 @@ import (
 	"strconv"
 	"strings"
 
-	Z "github.com/rwxrob/bonzai/z"
+	"github.com/rwxrob/bonzai"
 )
 
 var execCommand = exec.Command
@@ -85,11 +85,13 @@ func GetDefaultDisplay() string {
 	return strings.TrimSpace(string(out))
 }
 
-func Matches(cmd *Z.Cmd, arg string) bool {
+// Matches checks if arg matches the command's name or any of its aliases
+func Matches(cmd *bonzai.Cmd, arg string) bool {
 	if arg == cmd.Name {
 		return true
 	}
-	for _, alias := range cmd.Aliases {
+	// In new bonzai, Alias is pipe-delimited string, use Aliases() method
+	for _, alias := range cmd.Aliases() {
 		if arg == alias {
 			return true
 		}

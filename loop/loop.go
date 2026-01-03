@@ -10,8 +10,7 @@ import (
 	"syscall"
 
 	dependencies "github.com/BuddhiLW/lazywal/internal/check"
-	Z "github.com/rwxrob/bonzai/z"
-	"github.com/rwxrob/help"
+	"github.com/rwxrob/bonzai"
 )
 
 type Config struct {
@@ -36,12 +35,15 @@ type Wallpaper struct {
 	Config   *Config
 	Running  map[string]*exec.Cmd
 	Monitors []Monitor
+	// Simple in-memory storage for PIDs (replacing vars.Data)
+	pids        map[string]string
 }
 
 func NewWallPaper(setup *Config) *Wallpaper {
 	return &Wallpaper{
 		Config:  setup,
 		Running: make(map[string]*exec.Cmd),
+		pids:    make(map[string]string),
 	}
 }
 
@@ -50,6 +52,19 @@ var (
 	defaultDisplay string     = GetDefaultDisplay()
 	mpvArgs        string     = "-wid WID --loop --no-audio --no-resume-playback --panscan=1.0"
 )
+
+// Simple in-memory variable storage methods
+func (w *Wallpaper) getVar(key string) string {
+	return w.pids[key]
+}
+
+func (w *Wallpaper) setVar(key, value string) {
+	w.pids[key] = value
+}
+
+func (w *Wallpaper) delVar(key string) {
+	delete(w.pids, key)
+}
 
 func (w *Wallpaper) Set() error {
 	monitors, err := GetMonitors()
@@ -72,7 +87,7 @@ func (w *Wallpaper) Set() error {
 }
 
 func (w *Wallpaper) getMonitorPIDs(monitor string) []int {
-	pidsStr := Z.Vars.Get(VarMonitorPIDs + "_" + monitor)
+	pidsStr := w.getVar(VarMonitorPIDs + "_" + monitor)
 	if pidsStr == "" {
 		return nil
 	}
@@ -85,16 +100,16 @@ func (w *Wallpaper) getMonitorPIDs(monitor string) []int {
 	return pids
 }
 
-func (w *Wallpaper) setMonitorPIDs(monitor string, pids []int) error {
+func (w *Wallpaper) setMonitorPIDs(monitor string, pids []int) {
 	pidStrs := make([]string, len(pids))
 	for i, pid := range pids {
 		pidStrs[i] = strconv.Itoa(pid)
 	}
-	return Z.Vars.Set(VarMonitorPIDs+"_"+monitor, strings.Join(pidStrs, ","))
+	w.setVar(VarMonitorPIDs+"_"+monitor, strings.Join(pidStrs, ","))
 }
 
 func (w *Wallpaper) getAllPIDs() []int {
-	pidsStr := Z.Vars.Get(VarPIDs)
+	pidsStr := w.getVar(VarPIDs)
 	if pidsStr == "" {
 		return nil
 	}
@@ -107,12 +122,12 @@ func (w *Wallpaper) getAllPIDs() []int {
 	return pids
 }
 
-func (w *Wallpaper) setAllPIDs(pids []int) error {
+func (w *Wallpaper) setAllPIDs(pids []int) {
 	pidStrs := make([]string, len(pids))
 	for i, pid := range pids {
 		pidStrs[i] = strconv.Itoa(pid)
 	}
-	return Z.Vars.Set(VarPIDs, strings.Join(pidStrs, ","))
+	w.setVar(VarPIDs, strings.Join(pidStrs, ","))
 }
 
 func (w *Wallpaper) startOnMonitor(monitor Monitor) error {
@@ -141,7 +156,7 @@ func (w *Wallpaper) startOnMonitor(monitor Monitor) error {
 			}
 		}
 		w.setAllPIDs(newPIDs)
-		Z.Vars.Del(VarMonitorPIDs + "_" + monitor.Name)
+		w.delVar(VarMonitorPIDs + "_" + monitor.Name)
 	}
 
 	// Delete from Running map
@@ -222,23 +237,32 @@ func (w *Wallpaper) killExisting() {
 
 	// Clear all tracking data
 	w.Running = make(map[string]*exec.Cmd)
-	Z.Vars.Del(VarPIDs)
+	w.delVar(VarPIDs)
 
 	// Clear monitor PIDs
 	monitors, _ := GetMonitors()
 	for _, monitor := range monitors {
-		Z.Vars.Del(VarMonitorPIDs + "_" + monitor.Name)
+		w.delVar(VarMonitorPIDs + "_" + monitor.Name)
 	}
 }
 
-var LoopCmd = &Z.Cmd{
-	Name:     `set`,
-	Aliases:  []string{`set-path`, `path`},
-	Usage:    `lazywal set <path> [display <dimension>]`,
-	Summary:  `Set video wallpaper from given path`,
-	MinArgs:  1,
-	Commands: []*Z.Cmd{help.Cmd, SetDisplayCmd},
-	Call: func(caller *Z.Cmd, args ...string) error {
+var LoopCmd = &bonzai.Cmd{
+	Name:    `set`,
+	Alias:   `set-path|path`,
+	Usage:   `lazywal set <path> [display <dimension>]`,
+	Short:   `set video wallpaper from given path`,
+	MinArgs: 1,
+	Cmds:    []*bonzai.Cmd{HelpCmd, SetDisplayCmd},
+
+	// MCP metadata for tool generation
+	Mcp: &bonzai.McpMeta{
+		Desc: "Set a video or animated GIF as wallpaper on all monitors",
+		Params: []bonzai.McpParam{
+			{Name: "path", Desc: "Absolute path to video or GIF file", Type: "string", Required: true},
+		},
+	},
+
+	Do: func(x *bonzai.Cmd, args ...string) error {
 		path := args[0]
 		if !validPath(path) {
 			return fmt.Errorf("invalid path: %s", path)
@@ -248,13 +272,13 @@ var LoopCmd = &Z.Cmd{
 		log.Print("File chosen: ", path)
 		Wall.Config.Path = path
 
-		err := dependencies.TestDepsCmd.Call(caller, args[0])
+		err := dependencies.TestDepsCmd.Do(x, args[0])
 		if err != nil {
 			return err
 		}
 
 		if len(args) < 2 {
-			err := SetDisplayCmd.Call(caller, defaultDisplay)
+			err := SetDisplayCmd.Do(x, defaultDisplay)
 			if err != nil {
 				return err
 			}
@@ -262,7 +286,7 @@ var LoopCmd = &Z.Cmd{
 		}
 
 		if len(args) > 2 && args[1] == "display" {
-			err := SetDisplayCmd.Call(caller, args[2:]...)
+			err := SetDisplayCmd.Do(x, args[2:]...)
 			if err != nil {
 				return err
 			}
@@ -270,7 +294,7 @@ var LoopCmd = &Z.Cmd{
 
 		// if last `args` is any of PywalCmd.Aliases or PywalCmd.Name
 		if len(args) > 0 && Matches(PywalCmd, args[len(args)-1]) {
-			err := PywalCmd.Call(caller)
+			err := PywalCmd.Do(x)
 			if err != nil {
 				return err
 			}
@@ -280,14 +304,20 @@ var LoopCmd = &Z.Cmd{
 	},
 }
 
-var PywalCmd = &Z.Cmd{
-	Name:     `pywal`,
-	Aliases:  []string{"update-pywal", "colors"},
-	Usage:    `lazywal set <path> colors`,
-	Summary:  `Update pywal scheme to use a random frame from the loop.`,
-	NumArgs:  0,
-	Commands: []*Z.Cmd{help.Cmd},
-	Call: func(_ *Z.Cmd, args ...string) error {
+var PywalCmd = &bonzai.Cmd{
+	Name:    `pywal`,
+	Alias:   `update-pywal|colors`,
+	Usage:   `lazywal set <path> colors`,
+	Short:   `apply pywal colors from random video frame`,
+	NumArgs: 0,
+	Cmds:    []*bonzai.Cmd{HelpCmd},
+
+	// MCP metadata for tool generation
+	Mcp: &bonzai.McpMeta{
+		Desc: "Extract a random frame from the current wallpaper and apply pywal color scheme",
+	},
+
+	Do: func(_ *bonzai.Cmd, args ...string) error {
 		available, err := dependencies.IsWalAvailable()
 		if available {
 			fmt.Println("wal is available in your system.")
@@ -299,14 +329,15 @@ var PywalCmd = &Z.Cmd{
 	},
 }
 
-var SetDisplayCmd = &Z.Cmd{
-	Name:     `display`,
-	Aliases:  []string{`setdisplay`, `set`},
-	Usage:    `<path>`,
-	Summary:  `Set wallpaper to dimensions/position of screen <path>.`,
-	NumArgs:  1,
-	Commands: []*Z.Cmd{help.Cmd},
-	Call: func(_ *Z.Cmd, args ...string) error {
+var SetDisplayCmd = &bonzai.Cmd{
+	Name:    `display`,
+	Alias:   `setdisplay|set`,
+	Usage:   `<path>`,
+	Short:   `set wallpaper to screen dimensions`,
+	NumArgs: 1,
+	Cmds:    []*bonzai.Cmd{HelpCmd},
+
+	Do: func(_ *bonzai.Cmd, args ...string) error {
 		err := SetDisplay(args[0])
 		if err != nil {
 			return err

@@ -4,18 +4,23 @@ import (
 	"fmt"
 	"os/exec"
 
-	Z "github.com/rwxrob/bonzai/z"
-	"github.com/rwxrob/help"
+	"github.com/rwxrob/bonzai"
 )
 
-var ClearCmd = &Z.Cmd{
-	Name:     `clear`,
-	Aliases:  []string{`kill`},
-	Usage:    `lazywal clear`,
-	Summary:  `Kill all process related with 'xwinwrap' that may be hanging.`,
-	MinArgs:  0,
-	Commands: []*Z.Cmd{help.Cmd},
-	Call: func(caller *Z.Cmd, _ ...string) error {
+var ClearCmd = &bonzai.Cmd{
+	Name:    `clear`,
+	Alias:   `kill`,
+	Usage:   `lazywal clear`,
+	Short:   `kill all xwinwrap processes that may be hanging`,
+	MinArgs: 0,
+	Cmds:    []*bonzai.Cmd{HelpCmd},
+
+	// MCP metadata for tool generation
+	Mcp: &bonzai.McpMeta{
+		Desc: "Clear the wallpaper by killing all xwinwrap processes",
+	},
+
+	Do: func(x *bonzai.Cmd, _ ...string) error {
 		fmt.Println("Killing all xwinwrap processes")
 		cmd := exec.Command("pkill", "xwinwrap")
 		return cmd.Run()
