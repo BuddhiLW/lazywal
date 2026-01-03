@@ -11,6 +11,7 @@ import (
 
 	dependencies "github.com/BuddhiLW/lazywal/internal/check"
 	"github.com/rwxrob/bonzai"
+	"github.com/rwxrob/bonzai/persisters/injson"
 )
 
 type Config struct {
@@ -31,19 +32,20 @@ const (
 	VarMonitorPIDs = VarPrefix + "monitor_pids"
 )
 
+// Persistent storage using bonzai's injson persister
+// Stored in ~/.local/state/lazywal/state.json
+var statePersister = injson.NewUserState("lazywal", "state.json")
+
 type Wallpaper struct {
 	Config   *Config
 	Running  map[string]*exec.Cmd
 	Monitors []Monitor
-	// Simple in-memory storage for PIDs (replacing vars.Data)
-	pids        map[string]string
 }
 
 func NewWallPaper(setup *Config) *Wallpaper {
 	return &Wallpaper{
 		Config:  setup,
 		Running: make(map[string]*exec.Cmd),
-		pids:    make(map[string]string),
 	}
 }
 
@@ -53,17 +55,17 @@ var (
 	mpvArgs        string     = "-wid WID --loop --no-audio --no-resume-playback --panscan=1.0"
 )
 
-// Simple in-memory variable storage methods
+// Persistent variable storage methods using bonzai's injson persister
 func (w *Wallpaper) getVar(key string) string {
-	return w.pids[key]
+	return statePersister.Get(key)
 }
 
 func (w *Wallpaper) setVar(key, value string) {
-	w.pids[key] = value
+	statePersister.Set(key, value)
 }
 
 func (w *Wallpaper) delVar(key string) {
-	delete(w.pids, key)
+	statePersister.Set(key, "") // empty string effectively deletes
 }
 
 func (w *Wallpaper) Set() error {
@@ -213,7 +215,7 @@ func (w *Wallpaper) startOnMonitor(monitor Monitor) error {
 		}
 	}
 
-	// Store PIDs
+	// Store PIDs persistently
 	w.setMonitorPIDs(monitor.Name, monitorPIDs)
 	w.setAllPIDs(allPIDs)
 	w.Running[monitor.Name] = cmd
@@ -224,7 +226,7 @@ func (w *Wallpaper) startOnMonitor(monitor Monitor) error {
 }
 
 func (w *Wallpaper) killExisting() {
-	// Kill all tracked processes
+	// Kill all tracked processes from persistent storage
 	allPIDs := w.getAllPIDs()
 	for _, pid := range allPIDs {
 		if runtime.GOOS != "windows" {

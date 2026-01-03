@@ -148,7 +148,6 @@ func TestStartOnMonitor(t *testing.T) {
 					Path: tt.videoPath,
 				},
 				Running: make(map[string]*exec.Cmd),
-				pids:    make(map[string]string),
 			}
 
 			oldExec := execCommand

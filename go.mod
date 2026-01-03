@@ -1,11 +1,12 @@
 module github.com/BuddhiLW/lazywal
 
-go 1.23.0
+go 1.23.4
 
 require (
 	github.com/google/uuid v1.6.0
 	github.com/mark3labs/mcp-go v0.43.2
 	github.com/rwxrob/bonzai v0.20.10
+	github.com/rwxrob/bonzai/persisters/injson v0.1.0
 )
 
 require (
@@ -13,6 +14,9 @@ require (
 	github.com/buger/jsonparser v1.1.1 // indirect
 	github.com/invopop/jsonschema v0.13.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
+	github.com/rogpeppe/go-internal v1.13.1 // indirect
+	github.com/rwxrob/bonzai/futil v0.3.0 // indirect
+	github.com/rwxrob/bonzai/uniq v0.1.0 // indirect
 	github.com/spf13/cast v1.7.1 // indirect
 	github.com/wk8/go-ordered-map/v2 v2.1.8 // indirect
 	github.com/yosida95/uritemplate/v3 v3.0.2 // indirect
@@ -20,3 +24,7 @@ require (
 )
 
 replace github.com/rwxrob/bonzai => /home/lages/PP/bonzai
+
+replace github.com/rwxrob/bonzai/persisters/injson => /home/lages/PP/bonzai/persisters/injson
+
+replace github.com/rwxrob/bonzai/futil => /home/lages/PP/bonzai/futil

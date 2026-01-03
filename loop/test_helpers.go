@@ -23,8 +23,8 @@ func testContains(slice []int, item int) bool {
 }
 
 func cleanupVars() {
-	// Clear in-memory storage
-	Wall.pids = make(map[string]string)
+	// Clear persistent storage
+	Wall.delVar(VarPIDs)
 	Wall.Running = make(map[string]*exec.Cmd)
 	// Kill any stray processes
 	exec.Command("pkill", "-f", "xwinwrap").Run()
