@@ -7,7 +7,7 @@ import (
 	"fmt"
 
 	dependencies "github.com/BuddhiLW/lazywal/internal/check"
-	"github.com/rwxrob/bonzai"
+	"github.com/BuddhiLW/bonzai"
 )
 
 // showHelp displays help for the given command
@@ -54,7 +54,7 @@ var HelpCmd = &bonzai.Cmd{
 var Cmd = &bonzai.Cmd{
 	Name:  `lazywal`,
 	Short: `video/gif wallpaper client`,
-	Vers:  `v1.3.0`,
+	Vers:  `v1.4.0`,
 
 	Cmds: []*bonzai.Cmd{
 		HelpCmd,

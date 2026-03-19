@@ -1,3 +1,5 @@
+github.com/BuddhiLW/bonzai v0.57.1-mcp h1:K59pYo604kwVuncUrNQDbZiWRlz2O60zELTsCwBja70=
+github.com/BuddhiLW/bonzai v0.57.1-mcp/go.mod h1:XQZBYM9fP/D6v0hPGY0EATG5b7TtCOKyQaox0wu5fO0=
 github.com/bahlo/generic-list-go v0.2.0 h1:5sz/EEAK+ls5wF+NeqDpk5+iNdMDXrh3z3nPnH1Wvgk=
 github.com/bahlo/generic-list-go v0.2.0/go.mod h1:2KvAjgMlE5NNynlg/5iLrrCCZ2+5xWbdbCW3pNTGyYg=
 github.com/buger/jsonparser v1.1.1 h1:2PnMjfWD7wBILjqQbt530v576A/cAbQvEW9gGIpYMUs=
@@ -25,6 +27,10 @@ github.com/pmezard/go-difflib v1.0.0 h1:4DBwDE0NGyQoBHbLQYPwSUPoCMWR5BEzIk/f1lZb
 github.com/pmezard/go-difflib v1.0.0/go.mod h1:iKH77koFhYxTK1pcRnkKkqfTogsbg7gZNVY4sRDYZ/4=
 github.com/rogpeppe/go-internal v1.13.1 h1:KvO1DLK/DRN07sQ1LQKScxyZJuNnedQ5/wKSR38lUII=
 github.com/rogpeppe/go-internal v1.13.1/go.mod h1:uMEvuHeurkdAXX61udpOXGD/AzZDWNMNyH2VO9fmH0o=
+github.com/rwxrob/bonzai/futil v0.3.0 h1:zShASzw32e/4ZPPvF1nbFWgbj3UWHfb5nFBIw+3Bu6s=
+github.com/rwxrob/bonzai/futil v0.3.0/go.mod h1:wobk3a1WuYjgqYZ+ezbjNupCpqaYceF2441M/FSm9GM=
+github.com/rwxrob/bonzai/persisters/injson v0.3.0 h1:0v2Wla2jgcEnp3F2S385l+GnRwlq3nR7R+WcnkEVemk=
+github.com/rwxrob/bonzai/persisters/injson v0.3.0/go.mod h1:hrkAMwAuGiNVJcD3+oRbToOUBmo2JuIU6Lu/Fwgpo6s=
 github.com/rwxrob/bonzai/uniq v0.1.0 h1:xOlTWnaotslv1I0Nc+3+qXHxecoxNSROo871S2m3cq4=
 github.com/rwxrob/bonzai/uniq v0.1.0/go.mod h1:RsSPso5Dhs1tYEjhuVA4b8DM5l0pQPhGebm8Lx5XHc8=
 github.com/spf13/cast v1.7.1 h1:cuNEagBQEHWN1FnbGEjCXL2szYEXqfJPbP2HNUaca9Y=

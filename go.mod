@@ -3,10 +3,10 @@ module github.com/BuddhiLW/lazywal
 go 1.23.4
 
 require (
+	github.com/BuddhiLW/bonzai v0.57.1-mcp
 	github.com/google/uuid v1.6.0
 	github.com/mark3labs/mcp-go v0.43.2
-	github.com/rwxrob/bonzai v0.20.10
-	github.com/rwxrob/bonzai/persisters/injson v0.1.0
+	github.com/rwxrob/bonzai/persisters/injson v0.3.0
 )
 
 require (
@@ -22,9 +22,3 @@ require (
 	github.com/yosida95/uritemplate/v3 v3.0.2 // indirect
 	gopkg.in/yaml.v3 v3.0.1 // indirect
 )
-
-replace github.com/rwxrob/bonzai => /home/lages/PP/bonzai
-
-replace github.com/rwxrob/bonzai/persisters/injson => /home/lages/PP/bonzai/persisters/injson
-
-replace github.com/rwxrob/bonzai/futil => /home/lages/PP/bonzai/futil
