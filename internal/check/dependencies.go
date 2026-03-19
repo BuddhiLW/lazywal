@@ -5,7 +5,7 @@ import (
 	"os/exec"
 
 	"github.com/BuddhiLW/lazywal/config"
-	"github.com/rwxrob/bonzai"
+	"github.com/BuddhiLW/bonzai"
 )
 
 const (

@@ -7,7 +7,7 @@ import (
 	"fmt"
 
 	dependencies "github.com/BuddhiLW/lazywal/internal/check"
-	"github.com/rwxrob/bonzai"
+	"github.com/BuddhiLW/bonzai"
 )
 
 // showHelp displays help for the given command

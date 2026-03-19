@@ -10,7 +10,7 @@ import (
 	"syscall"
 
 	dependencies "github.com/BuddhiLW/lazywal/internal/check"
-	"github.com/rwxrob/bonzai"
+	"github.com/BuddhiLW/bonzai"
 	"github.com/rwxrob/bonzai/persisters/injson"
 )
 

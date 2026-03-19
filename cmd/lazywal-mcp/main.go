@@ -8,7 +8,7 @@ import (
 
 	"github.com/BuddhiLW/lazywal/loop"
 	"github.com/mark3labs/mcp-go/server"
-	bmcp "github.com/rwxrob/bonzai/mcp"
+	bmcp "github.com/BuddhiLW/bonzai/mcp"
 )
 
 func main() {
