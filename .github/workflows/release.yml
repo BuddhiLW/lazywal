@@ -1,31 +1,74 @@
-name: Release Binaries
+name: Release
 
 on:
   push:
-    tags:
-      - 'v*' # Trigger on version tags, e.g., v1.0.0
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
 
 jobs:
+  tag:
+    name: Tag & Release
+    runs-on: ubuntu-latest
+    outputs:
+      tag: ${{ steps.version.outputs.tag }}
+      version: ${{ steps.version.outputs.version }}
+      new_release: ${{ steps.check_tag.outputs.exists == 'false' }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Read version
+        id: version
+        run: |
+          if [ -f VERSION ]; then
+            VERSION=$(cat VERSION | tr -d '[:space:]')
+          else
+            echo "::error::VERSION file not found"
+            exit 1
+          fi
+          echo "version=${VERSION}" >> "$GITHUB_OUTPUT"
+          echo "tag=v${VERSION}" >> "$GITHUB_OUTPUT"
+
+      - name: Check if tag exists
+        id: check_tag
+        run: |
+          if git rev-parse "v${{ steps.version.outputs.version }}" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Create tag
+        if: steps.check_tag.outputs.exists == 'false'
+        run: |
+          git tag "${{ steps.version.outputs.tag }}"
+          git push origin "${{ steps.version.outputs.tag }}"
+
   build:
+    needs: tag
+    if: needs.tag.outputs.new_release == 'true'
     runs-on: ubuntu-latest
     strategy:
       matrix:
         include:
-          # Linux builds
           - os: linux
             arch: amd64
           - os: linux
             arch: arm64
           - os: linux
             arch: arm
-          # macOS builds (for development)
           - os: darwin
             arch: amd64
           - os: darwin
             arch: arm64
     steps:
       - name: Checkout code
-        uses: actions/checkout@v3
+        uses: actions/checkout@v4
 
       - name: Set up Go
         uses: actions/setup-go@v4
@@ -47,35 +90,32 @@ jobs:
           path: dist/lazywal-${{ matrix.os }}-${{ matrix.arch }}
 
   release:
-    needs: build
+    needs: [tag, build]
     runs-on: ubuntu-latest
+    permissions:
+      contents: write
     steps:
       - name: Download build artifacts
         uses: actions/download-artifact@v4
         with:
           path: dist/
 
-      - name: Create GitHub Release
-        uses: ncipollo/release-action@v1
-        with:
-          tag: ${{ github.ref_name }}
-          name: Release ${{ github.ref_name }}
-          artifacts: dist/*
-          generateReleaseNotes: true
-          body: |
-            ## Lazywal ${{ github.ref_name }}
-            
-            ### Downloads
-            - Linux: `lazywal-linux-amd64`, `lazywal-linux-arm64`, `lazywal-linux-arm`
-            - macOS: `lazywal-darwin-amd64`, `lazywal-darwin-arm64` (Apple Silicon)
-            
-            ### Note
-            This tool requires X11 and is primarily designed for Linux systems.
-            macOS builds are provided for development purposes only.
-            
-            ### Dependencies
-            Requires:
-            - xwinwrap
-            - mpv
-            - xrandr
+      - name: Check if release exists
+        id: check_release
+        run: |
+          if gh release view "${{ needs.tag.outputs.tag }}" >/dev/null 2>&1; then
+            echo "exists=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "exists=false" >> "$GITHUB_OUTPUT"
+          fi
+        env:
+          GH_TOKEN: ${{ github.token }}
 
+      - name: Create GitHub release
+        if: steps.check_release.outputs.exists == 'false'
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: ${{ needs.tag.outputs.tag }}
+          name: Lazywal ${{ needs.tag.outputs.tag }}
+          generate_release_notes: true
+          files: dist/**/*
