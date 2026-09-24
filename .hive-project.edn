@@ -1,0 +1,6 @@
+{:project-id "lazywal"
+ :parent     nil
+ :language   :go
+ :tags       ["wallpaper" "video-wallpaper" "linux" "x11" "wayland" "gnome" "kde" "xmonad"
+              "mpv" "xwinwrap" "mpvpaper" "cli" "bonzai" "mcp" "ports-and-adapters"]
+ :summary    "Go CLI (bonzai, with a generated MCP server) that plays videos as the desktop wallpaper on Linux. Ports and adapters: domain in internal/wallpaper (Video, Session, Backend port with an LSP contract suite, data-driven selection Rules in a Registry, application Service), typed argv builders and a Runner port in internal/shell, one adapter per desktop in internal/backend (xwinwrap for X11 WMs and DEs, Hanabi for GNOME, Smart Video Wallpaper Reborn for Plasma, mpvpaper for wlr-layer-shell compositors, user-defined backends from backends.json)."}
