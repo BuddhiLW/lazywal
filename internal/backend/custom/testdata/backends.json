@@ -1,0 +1,28 @@
+{
+  "backends": [
+    {
+      "name": "hyprland-dp1",
+      "description": "Hyprland: mpvpaper with sound, on DP-1 only",
+      "rules": [{ "session": "wayland", "desktops": ["hyprland"], "priority": 200 }],
+      "spawn": [["mpvpaper", "-o", "loop-file=inf panscan=1", "DP-1", "{{path}}"]]
+    },
+    {
+      "name": "hanabi",
+      "description": "GNOME Shell via the Hanabi extension, set with gsettings",
+      "requires": ["gnome-shell"],
+      "rules": [{ "desktops": ["gnome"], "exclude": ["budgie", "gnome-flashback", "unity", "pantheon"], "priority": 150 }],
+      "set": [
+        ["gsettings", "set", "io.github.jeffshee.hanabi-extension", "video-path", "{{path}}"],
+        ["gnome-extensions", "enable", "hanabi-extension@jeffshee.github.io"]
+      ],
+      "clear": [["gnome-extensions", "disable", "hanabi-extension@jeffshee.github.io"]]
+    },
+    {
+      "name": "xwinwrap-hwdec",
+      "description": "X11 window managers: xwinwrap + mpv with hardware decoding",
+      "requires": ["mpv"],
+      "spawn": [["xwinwrap", "-fs", "-ni", "-b", "-nf", "-un", "-ov", "--",
+                 "mpv", "-wid", "WID", "--hwdec=auto", "--no-audio", "--loop-file=inf", "--", "{{path}}"]]
+    }
+  ]
+}

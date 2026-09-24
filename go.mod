@@ -4,7 +4,6 @@ go 1.23.4
 
 require (
 	github.com/BuddhiLW/bonzai v0.57.1-mcp
-	github.com/google/uuid v1.6.0
 	github.com/mark3labs/mcp-go v0.43.2
 	github.com/rwxrob/bonzai/persisters/injson v0.3.0
 )
@@ -12,6 +11,7 @@ require (
 require (
 	github.com/bahlo/generic-list-go v0.2.0 // indirect
 	github.com/buger/jsonparser v1.1.1 // indirect
+	github.com/google/uuid v1.6.0 // indirect
 	github.com/invopop/jsonschema v0.13.0 // indirect
 	github.com/mailru/easyjson v0.7.7 // indirect
 	github.com/rogpeppe/go-internal v1.13.1 // indirect

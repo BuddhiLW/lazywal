@@ -6,7 +6,6 @@ package loop
 import (
 	"fmt"
 
-	dependencies "github.com/BuddhiLW/lazywal/internal/check"
 	"github.com/BuddhiLW/bonzai"
 )
 
@@ -54,11 +53,11 @@ var HelpCmd = &bonzai.Cmd{
 var Cmd = &bonzai.Cmd{
 	Name:  `lazywal`,
 	Short: `video/gif wallpaper client`,
-	Vers:  `v1.4.3`,
+	Vers:  version(),
 
 	Cmds: []*bonzai.Cmd{
 		HelpCmd,
-		LoopCmd, ClearCmd, PywalCmd, dependencies.TestDepsCmd,
+		LoopCmd, ClearCmd, PywalCmd, BackendsCmd, DepsCmd,
 	},
 
 	// Show help when called without args (instead of using Def which causes issues)
@@ -77,22 +76,25 @@ Issues: github.com/BuddhiLW/lazywal/issues
 
 You can use the following commands:
 
-* lazywal set <path>                    (Auto-detects monitor configuration)
-* lazywal set <path> display <WxH>      (Manual display size - e.g. 1440x1080)
-* lazywal kill                          (Kills all xwinwrap processes)
+* lazywal set <path>                    (Auto-detects desktop and monitors)
+* lazywal set <path> colors             (Also apply pywal colors)
+* lazywal clear                         (Stops the wallpaper, restores the desktop)
 * lazywal pywal                         (Updates color scheme using pywal)
+* lazywal backends                      (Shows detected session and backends)
+
+Backends (auto-selected; override with LAZYWAL_BACKEND=<name>):
+* xwinwrap     - X11 window managers (xmonad, i3, bspwm...)
+* mate, cinnamon, xfce, lxqt, lxde - X11 desktops (hide desktop icons while playing)
+* x11-desktop  - other X11 desktops with panels
+* gnome        - GNOME Wayland/X11, via the Hanabi extension
+* plasma       - KDE Plasma 6, via Smart Video Wallpaper Reborn
+* mpvpaper     - Hyprland, Sway, river, niri, Wayfire, labwc, KDE, COSMIC...
+* your own     - defined in ~/.config/lazywal/backends.json
 
 Features:
 * Multi-monitor support with correct positioning
-* Automatic monitor detection
 * Pywal integration for system-wide color schemes
 * Handles video files and animated GIFs
-
-Dependencies:
-* xwinwrap - For window creation
-* mpv     - For video playback
-* xrandr  - For monitor detection
-* pywal   - Optional, for color scheme generation
 
 See the README.md for more information and examples.
 `,
