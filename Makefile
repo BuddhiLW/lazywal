@@ -1,8 +1,10 @@
 PREFIX ?= /usr
+VERSION := v$(shell tr -d '[:space:]' < VERSION)
+LDFLAGS := -X github.com/BuddhiLW/lazywal/loop.Version=$(VERSION)
 
 build:
-	@go build -o lazywal $(PWD)/cmd/lazywal/main.go
-	@go build -o lazywal-mcp $(PWD)/cmd/lazywal-mcp/main.go
+	@go build -ldflags "$(LDFLAGS)" -o lazywal ./cmd/lazywal
+	@go build -ldflags "$(LDFLAGS)" -o lazywal-mcp ./cmd/lazywal-mcp
 
 install: build
 	@mkdir -p $(DESTDIR)$(PREFIX)/bin
