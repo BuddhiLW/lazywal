@@ -1,0 +1,7 @@
+package hive:lazywal;
+
+/// One call shape for every operation: op name and JSON request in,
+/// JSON envelope {"ok":bool,"value"|"error"} out.
+world lazywal {
+  export call: func(op: string, request: string) -> string;
+}
