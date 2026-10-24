@@ -32,10 +32,49 @@ var result []byte
 
 func addr(b []byte) uintptr { return uintptr(unsafe.Pointer(unsafe.SliceData(b))) }
 
+// bootArena serves cabi_realloc calls that arrive before the Go runtime has
+// initialised its heap. The wasi_snapshot_preview1 adapter allocates its
+// state and stack lazily, on the first WASI import call, through the main
+// module's cabi_realloc; for a Go reactor that first call is clock_time_get
+// inside runtime.schedinit, during _initialize. A make() there throws (no
+// heap yet), and the throw printer's fd_write re-enters the adapter, which
+// calls cabi_realloc again: unbounded recursion. A static, pointer-free
+// arena needs no runtime, so those early requests are bump-allocated here.
+// The adapter keeps what it gets for the life of the instance, so nothing
+// is ever freed back.
+var (
+	bootArena [256 << 10]byte
+	bootUsed  uintptr
+	heapReady bool // set by init, once the Go heap is usable
+)
+
+func init() { heapReady = true }
+
+// bootAlloc returns an aligned block of bootArena, or 0 when it is full.
+func bootAlloc(align, size uint32) uint32 {
+	base := uintptr(unsafe.Pointer(&bootArena[0]))
+	a := uintptr(align)
+	if a == 0 {
+		a = 1
+	}
+	start := (base + bootUsed + a - 1) &^ (a - 1)
+	end := start + uintptr(size)
+	if end > base+uintptr(len(bootArena)) {
+		return 0
+	}
+	bootUsed = end - base
+	return uint32(start)
+}
+
 //go:wasmexport cabi_realloc
 func cabiRealloc(old, oldSize, align, newSize uint32) uint32 {
 	if newSize == 0 {
 		return align
+	}
+	if !heapReady && old == 0 {
+		if p := bootAlloc(align, newSize); p != 0 {
+			return p
+		}
 	}
 	buf := make([]byte, newSize+align)
 	start := addr(buf)
